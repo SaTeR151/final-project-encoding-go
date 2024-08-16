@@ -2,6 +2,10 @@ package encoding
 
 import (
 	"github.com/Yandex-Practicum/final-project-encoding-go/models"
+	"gopkg.in/yaml.v3"
+
+	"encoding/json"
+	"os"
 )
 
 // JSONData тип для перекодирования из JSON в YAML
@@ -27,14 +31,47 @@ type MyEncoder interface {
 func (j *JSONData) Encoding() error {
 	// ниже реализуйте метод
 	// ...
-
+	jFile, err := os.ReadFile(j.FileInput)
+	if err != nil {
+		return err
+	}
+	err = json.Unmarshal(jFile, &j.DockerCompose)
+	if err != nil {
+		return err
+	}
+	yFile, err := os.Create(j.FileOutput)
+	if err != nil {
+		return err
+	}
+	yData, err := yaml.Marshal(&j.DockerCompose)
+	if err != nil {
+		return err
+	}
+	_, err = yFile.Write(yData)
+	if err != nil {
+		return err
+	}
+	defer yFile.Close()
 	return nil
 }
 
 // Encoding перекодирует файл из YAML в JSON
 func (y *YAMLData) Encoding() error {
-	// Ниже реализуйте метод
-	// ...
-
+	yamlData, err := os.ReadFile(y.FileInput)
+	if err != nil {
+		return err
+	}
+	err = yaml.Unmarshal(yamlData, &y.DockerCompose)
+	if err != nil {
+		return err
+	}
+	yamlFile, err := os.Create(y.FileOutput)
+	if err != nil {
+		return err
+	}
+	_, err = yamlFile.Write(yamlData)
+	if err != nil {
+		return err
+	}
 	return nil
 }

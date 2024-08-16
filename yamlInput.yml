@@ -1,0 +1,19 @@
+version: "3"
+services:
+    web:
+        build: .
+        ports:
+            - 5000:5000
+        volumes:
+            - /usercode/:/code
+        links:
+            - database:backenddb
+    database:
+        image: mysql/mysql-server:5.7
+        environment:
+            - MYSQL_ROOT_PASSWORD=root
+            - MYSQL_USER=testuser
+            - MYSQL_PASSWORD=admin123
+            - MYSQL_DATABASE=backend
+        volumes:
+            - /usercode/db/init.sql:/docker-entrypoint-initdb.d/init.sql
